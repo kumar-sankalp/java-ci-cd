@@ -2,6 +2,8 @@
 
 This project sets up a CI/CD pipeline for a Java Spring Boot application using Jenkins and ArgoCD, deployed on Kubernetes using the GitOps approach.
 
+**Check out the detailed documentation by clicking on this link:**  https://devops-maestro.gitbook.io/cicd-pipeline-using-jenkins-and-argocd/
+
 ## Features
 
 1. **Automated Triggers**: Any code changes pushed to the repository automatically trigger the build process in Jenkins using a Docker agent.
