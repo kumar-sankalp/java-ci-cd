@@ -9,7 +9,7 @@ pipeline {
     stage('Checkout') {
       steps {
         echo "Cloning the code"
-        git url:"https://github.com/devops-maestro17/java-cicd-pipeline.git", branch: "main"
+        git url:"https://github.com/kumar-sankalp/java-ci-cd.git", branch: "main"
       }
     }
     stage('Build and Test') {
@@ -19,19 +19,10 @@ pipeline {
         sh 'cd spring-boot-app && mvn clean package'
       }
     }
-    stage('Static Code Analysis') {
-      environment {
-        SONAR_URL = "http://13.234.186.34:9000"
-      }
-      steps {
-        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh 'cd spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
-        }
-      }
-    }
+    
     stage('Build and Push Docker Image') {
       environment {
-        DOCKER_IMAGE = "containerizeops/java-app-cicd:${BUILD_NUMBER}"
+        DOCKER_IMAGE = "javabuildimage/java-app-cicd:${BUILD_NUMBER}"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
       }
       steps {
@@ -46,14 +37,14 @@ pipeline {
     }
     stage('Update Deployment File') {
         environment {
-            GIT_REPO_NAME = "java-cicd-pipeline"
-            GIT_USER_NAME = "devops-maestro17"
+            GIT_REPO_NAME = "java-ci-cd"
+            GIT_USER_NAME = "kumar-sankalp"
         }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
-                    git config user.email "rajdeep_deogharia@outlook.com"
-                    git config user.name "devops-maestro17"
+                    git config user.email "kumar.sankalp@outlook.com"
+                    git config user.name "kumar-sankalp"
                     BUILD_NUMBER=${BUILD_NUMBER}
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" spring-boot-app-manifests/deployment.yml
                     git add spring-boot-app-manifests/deployment.yml
